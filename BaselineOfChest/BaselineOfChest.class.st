@@ -10,7 +10,12 @@ BaselineOfChest >> baseline: spec [
 	
 	spec for: #common do: [ 
 		spec 
-			package: 'Chest'";
-			package: 'Lieutenant-Example';
-			package: 'Lieutenant-Test'" ]
+			package: 'Chest';
+			baseline: 'NewTools' with: [
+				spec
+					repository: 'github://pharo-spec/NewTools/tree/master/src'.
+					"repository: 'github://pharo-ide/ClassAnnotation:v0.4.0/src';
+					loads: 'Core' "
+			]
+	]
 ]
