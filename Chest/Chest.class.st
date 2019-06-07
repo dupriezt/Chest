@@ -98,10 +98,11 @@ Chest class >> specLayoutHelpExpanded [
 				add: #leftSpacerForHelpTitleLabel;
 				add: #helpTitleLabel withConstraints: [:cstr | cstr expand: false];
 				add: #rightSpacerForHelpTitleLabel;
-				yourself);
+				yourself)
+			withConstraints: [:cstr | cstr expand: false];
 			"add: #helpLabel1;"
-			add: #helpText withConstraints: [:cstr | cstr height: 150];
-			yourself) withConstraints: [:cstr | cstr expand: false];
+			add: #helpText withConstraints: [:cstr | cstr height: 120];
+			yourself) withConstraints: [:cstr | cstr expand: false; height: 110];
 		yourself.
 ]
 
@@ -144,7 +145,8 @@ Chest >> initializeWidgets [
 	helpTitleLabel := self newLabel label: 'Help'; emphasis: #bold.
 	leftSpacerForHelpTitleLabel := SpacerPresenter new.
 	rightSpacerForHelpTitleLabel := SpacerPresenter new.
-	helpText := self newText enabled: false; text: ('Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the chest' asText).
+	helpText := self newText enabled: false; text: (
+		'Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR, 'Chest at: anIndex' asText allBold, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR, 'Click on an object in the list to access it in the playground').
 	
 	
 	"helpText := self newText enabled: false; text: (Text streamContents: [:stream | stream nextPutAll: {Text string: 'Chest add: anObject' attribute: TextEmphasis bold. 'Stores an object into the chest'}])."
