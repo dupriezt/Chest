@@ -49,7 +49,8 @@ Chest class >> debugWorldMenuOn: aBuilder [
 		parent: #Debugging;
 		order: 0;
 		help: 'Store objects from anywhere to keep them around, check equality...';
-		action: [ self open ]
+		action: [ self open ];
+		icon: (Smalltalk ui icons iconNamed: #group).
 ]
 
 { #category : #specs }
@@ -141,7 +142,8 @@ Chest >> initializeWidgets [
 	helpButton := self makeHelpButton.
 	emptyButton := self newButton
 		action: [ Chest empty ];
-		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16).
+		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16);
+		yourself.
 	helpTitleLabel := self newLabel label: 'Help'; emphasis: #bold.
 	leftSpacerForHelpTitleLabel := SpacerPresenter new.
 	rightSpacerForHelpTitleLabel := SpacerPresenter new.
