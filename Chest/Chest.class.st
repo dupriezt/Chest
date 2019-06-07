@@ -3,16 +3,15 @@ Class {
 	#superclass : #ComposablePresenter,
 	#instVars : [
 		'playground',
-		'list',
 		'helpButton',
 		'emptyButton',
 		'helpExpanded',
-		'helpLabel1',
 		'descriptionLabel',
 		'helpTitleLabel',
 		'leftSpacerForHelpTitleLabel',
 		'rightSpacerForHelpTitleLabel',
-		'helpText'
+		'helpText',
+		'objectTable'
 	],
 	#classVars : [
 		'contents'
@@ -22,8 +21,10 @@ Class {
 
 { #category : #API }
 Chest class >> add: anObject [
+	"Adds an object to the chest. Returns the index at which it has been added."
 	contents add: anObject.
 	self contentsUpdated.
+	^ contents size
 ]
 
 { #category : #API }
@@ -55,7 +56,7 @@ Chest class >> debugWorldMenuOn: aBuilder [
 Chest class >> defaultSpec [
     ^ SpecBoxLayout newVertical
         add: (SpecPanedLayout newHorizontal
-            add: #list;
+            add: #objectTable;
             add: #playground;
             yourself);
         add: (SpecBoxLayout newHorizontal 
@@ -70,6 +71,11 @@ Chest class >> defaultSpec [
 Chest class >> empty [
 	contents := nil.
 	self contentsUpdated.
+]
+
+{ #category : #API }
+Chest class >> inspectAt: anIndex [
+	^ (self contents at: anIndex) inspect
 ]
 
 { #category : #examples }
@@ -90,7 +96,7 @@ Chest class >> removeAt: anIndex [
 	self contentsUpdated.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #specs }
 Chest class >> specLayoutHelpExpanded [
 	^ self defaultSpec add: 
 		(SpecBoxLayout newVertical
@@ -121,7 +127,7 @@ Chest >> initialize [
 Chest >> initializeWidgets [
 	playground := StPlayground new.
 	playground text autoAccept: true.
-	list := self newTable
+	objectTable := self newTable
 		addColumn: ((IndexTableColumn title: 'Index') width: 40);
 		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
 		items: self class contents;
@@ -142,7 +148,6 @@ Chest >> initializeWidgets [
 	emptyButton := self newButton
 		action: [ Chest empty ];
 		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16).
-	helpLabel1 := self newLabel label: 'This is helpful'.
 	helpTitleLabel := self newLabel label: 'Help'; emphasis: #bold.
 	leftSpacerForHelpTitleLabel := SpacerPresenter new.
 	rightSpacerForHelpTitleLabel := SpacerPresenter new.
@@ -171,5 +176,5 @@ Chest >> insertChestAt: anInteger inPlayground: anStPlayground [
 
 { #category : #updating }
 Chest >> updateList [
-	list ifNotNil: [:lst | lst items: self class contents].
+	objectTable ifNotNil: [:lst | lst items: self class contents].
 ]
