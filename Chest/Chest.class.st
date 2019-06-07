@@ -4,11 +4,15 @@ Class {
 	#instVars : [
 		'playground',
 		'list',
-		'helpLabel',
 		'helpButton',
 		'emptyButton',
 		'helpExpanded',
-		'helpLabel1'
+		'helpLabel1',
+		'descriptionLabel',
+		'helpTitleLabel',
+		'leftSpacerForHelpTitleLabel',
+		'rightSpacerForHelpTitleLabel',
+		'helpText'
 	],
 	#classVars : [
 		'contents'
@@ -55,7 +59,7 @@ Chest class >> defaultSpec [
             add: #playground;
             yourself);
         add: (SpecBoxLayout newHorizontal 
-            add: #helpLabel ;
+            add: #descriptionLabel ;
             add: #helpButton withConstraints: [ :cstr | cstr width: 35 ] ;
 				add: #emptyButton withConstraints: [ :cstr | cstr width: 35 ];
             yourself) withConstraints: [:contraint | contraint height: 35];
@@ -90,8 +94,14 @@ Chest class >> removeAt: anIndex [
 Chest class >> specLayoutHelpExpanded [
 	^ self defaultSpec add: 
 		(SpecBoxLayout newVertical
-			add: #helpLabel1;
-			yourself);
+			add: (SpecBoxLayout newHorizontal
+				add: #leftSpacerForHelpTitleLabel;
+				add: #helpTitleLabel withConstraints: [:cstr | cstr expand: false];
+				add: #rightSpacerForHelpTitleLabel;
+				yourself);
+			"add: #helpLabel1;"
+			add: #helpText withConstraints: [:cstr | cstr height: 150];
+			yourself) withConstraints: [:cstr | cstr expand: false];
 		yourself.
 ]
 
@@ -114,7 +124,7 @@ Chest >> initializeWidgets [
 		addColumn: (IndexTableColumn title: 'Index');
 		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
 		items: self class contents.
-	helpLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
+	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
 	helpButton := self newButton
 		action: [
 			helpExpanded ifFalse: [
@@ -131,7 +141,13 @@ Chest >> initializeWidgets [
 		action: [ Chest empty ];
 		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16).
 	helpLabel1 := self newLabel label: 'This is helpful'.
+	helpTitleLabel := self newLabel label: 'Help'; emphasis: #bold.
+	leftSpacerForHelpTitleLabel := SpacerPresenter new.
+	rightSpacerForHelpTitleLabel := SpacerPresenter new.
+	helpText := self newText enabled: false; text: ('Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the chest' asText).
 	
+	
+	"helpText := self newText enabled: false; text: (Text streamContents: [:stream | stream nextPutAll: {Text string: 'Chest add: anObject' attribute: TextEmphasis bold. 'Stores an object into the chest'}])."
 ]
 
 { #category : #updating }
