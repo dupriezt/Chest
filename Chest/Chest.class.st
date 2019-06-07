@@ -39,7 +39,7 @@ Chest class >> contents [
 
 { #category : #accessing }
 Chest class >> contentsUpdated [
-	self allInstancesDo: [ :inst | inst updateList ].
+	self allInstancesDo: [ :inst | inst updateObjectTable ].
 ]
 
 { #category : #'menu-entry' }
@@ -133,18 +133,7 @@ Chest >> initializeWidgets [
 		items: self class contents;
 		whenSelectionChangedDo: [ :item | self insertChestAt: item selectedIndex inPlayground: playground].
 	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
-	helpButton := self newButton
-		action: [
-			helpExpanded ifFalse: [
-				helpExpanded := true.
-				self window rebuildWithSpecLayout: self class specLayoutHelpExpanded.
-				helpButton state: true]
-			ifTrue: [
-				helpExpanded := false.
-				self window rebuildWithSpecLayout: self class defaultSpec.
-				helpButton state: false]];
-		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
-		"icon: ((self iconNamed: #question) scaledToSize: 16 @ 16)."
+	helpButton := self makeHelpButton.
 	emptyButton := self newButton
 		action: [ Chest empty ];
 		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16).
@@ -174,7 +163,23 @@ Chest >> insertChestAt: anInteger inPlayground: anStPlayground [
 "playground text text: ((playground text text first: ((playground text getSelection instVarNamed: #start) -1)), '(Chest at: ', item selectedIndex asString, ')',  (playground text text allButFirst:  (playground text getSelection instVarNamed: #stop)))"
 ]
 
+{ #category : #initialization }
+Chest >> makeHelpButton [
+	^ self newButton
+		action: [
+			helpExpanded ifFalse: [
+				helpExpanded := true.
+				self window rebuildWithSpecLayout: self class specLayoutHelpExpanded.
+				helpButton state: true]
+			ifTrue: [
+				helpExpanded := false.
+				self window rebuildWithSpecLayout: self class defaultSpec.
+				helpButton state: false]];
+		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
+		"icon: ((self iconNamed: #question) scaledToSize: 16 @ 16)."
+]
+
 { #category : #updating }
-Chest >> updateList [
+Chest >> updateObjectTable [
 	objectTable ifNotNil: [:lst | lst items: self class contents].
 ]
