@@ -48,7 +48,7 @@ Chest class >> debugWorldMenuOn: aBuilder [
 	(aBuilder item: #'Open Chest')
 		parent: #Debugging;
 		order: 0;
-		help: '';
+		help: 'Store objects from anywhere to keep them around, check equality...';
 		action: [ self open ]
 ]
 
@@ -108,13 +108,22 @@ Chest class >> specLayoutHelpExpanded [
 			withConstraints: [:cstr | cstr expand: false];
 			"add: #helpLabel1;"
 			add: #helpText withConstraints: [:cstr | cstr height: 120];
-			yourself) withConstraints: [:cstr | cstr expand: false; height: 110];
+			yourself) withConstraints: [:cstr | cstr expand: false; height: 160];
 		yourself.
 ]
 
 { #category : #specs }
 Chest class >> title [
 	^ 'Chest'
+]
+
+{ #category : #accessing }
+Chest >> helpText [
+	^ 'Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR,
+	 'Chest at: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR,
+'Chest inspectAt: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Inspects an object from the Chest', TextConstants CR,
+	'Chest empty' asText allBold, TextConstants Tab, TextConstants Tab, ' Empties the Chest', TextConstants CR,
+	'Click on an object in the list to access it in the playground'.
 ]
 
 { #category : #initialization }
@@ -140,11 +149,7 @@ Chest >> initializeWidgets [
 	helpTitleLabel := self newLabel label: 'Help'; emphasis: #bold.
 	leftSpacerForHelpTitleLabel := SpacerPresenter new.
 	rightSpacerForHelpTitleLabel := SpacerPresenter new.
-	helpText := self newText enabled: false; text: (
-		'Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR, 'Chest at: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR, 'Click on an object in the list to access it in the playground').
-	
-	
-	"helpText := self newText enabled: false; text: (Text streamContents: [:stream | stream nextPutAll: {Text string: 'Chest add: anObject' attribute: TextEmphasis bold. 'Stores an object into the chest'}])."
+	helpText := self newText enabled: false; text: self helpText.
 ]
 
 { #category : #accessing }
