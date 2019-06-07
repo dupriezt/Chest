@@ -56,8 +56,8 @@ Chest class >> defaultSpec [
             yourself);
         add: (SpecBoxLayout newHorizontal 
             add: #helpLabel ;
-            add: #helpButton "withConstraints: [ :cstr | cstr width: 35 ]" ;
-				add: #emptyButton "withConstraints: [ :cstr | cstr width: 35 ]";
+            add: #helpButton withConstraints: [ :cstr | cstr width: 35 ] ;
+				add: #emptyButton withConstraints: [ :cstr | cstr width: 35 ];
             yourself) withConstraints: [:contraint | contraint height: 35];
 			yourself.
 ]
@@ -87,13 +87,6 @@ Chest class >> removeAt: anIndex [
 ]
 
 { #category : #'as yet unclassified' }
-Chest class >> specLayout [
-    ^ SpecBoxLayout newVertical
-        add: #buttonBar;
-        yourself
-]
-
-{ #category : #'as yet unclassified' }
 Chest class >> specLayoutHelpExpanded [
 	^ self defaultSpec add: 
 		(SpecBoxLayout newVertical
@@ -109,6 +102,7 @@ Chest class >> title [
 
 { #category : #initialization }
 Chest >> initialize [
+	super initialize.
 	helpExpanded := false.
 ]
 
@@ -116,12 +110,11 @@ Chest >> initialize [
 Chest >> initializeWidgets [
 	playground := StPlayground new.
 	playground text autoAccept: true.
-	list := self newTable.
-	list addColumn: (IndexTableColumn title: 'Index');
-		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]).
-	list items: self class contents.
-	helpLabel := self newLabel.
-	helpLabel label: 'Use Chest to store objects from anywhere'.
+	list := self newTable
+		addColumn: (IndexTableColumn title: 'Index');
+		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
+		items: self class contents.
+	helpLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
 	helpButton := self newButton
 		action: [
 			helpExpanded ifFalse: [
