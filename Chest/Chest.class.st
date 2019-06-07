@@ -4,7 +4,10 @@ Class {
 	#instVars : [
 		'playground',
 		'list',
-		'helpLabel'
+		'helpLabel',
+		'buttonBar',
+		'helpButton',
+		'emptyButton'
 	],
 	#classVars : [
 		'contents'
@@ -12,13 +15,13 @@ Class {
 	#category : #Chest
 }
 
-{ #category : #examples }
+{ #category : #API }
 Chest class >> add: anObject [
 	contents add: anObject.
 	self contentsUpdated.
 ]
 
-{ #category : #examples }
+{ #category : #API }
 Chest class >> at: anIndex [
 	^ self contents at: anIndex
 ]
@@ -28,12 +31,12 @@ Chest class >> contents [
 	^ contents ifNil: [ contents := OrderedCollection new. ^ contents]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 Chest class >> contentsUpdated [
 	self allInstancesDo: [ :inst | inst updateList ].
 ]
 
-{ #category : #all }
+{ #category : #'menu-entry' }
 Chest class >> debugWorldMenuOn: aBuilder [
 	<worldMenu>
 	(aBuilder item: #'Open Chest')
@@ -43,15 +46,18 @@ Chest class >> debugWorldMenuOn: aBuilder [
 		action: [ self open ]
 ]
 
-{ #category : #examples }
+{ #category : #specs }
 Chest class >> defaultSpec [
 	^ SpecPanedLayout newVertical
 		add: (SpecPanedLayout newHorizontal
 			add: #list;
 			add: #playground;
 			yourself);
-		add: #helpLabel;
-		yourself.
+		add: (SpecBoxLayout newHorizontal 
+			add: #helpLabel;
+			add: #buttonBar;
+			yourself)
+		
 		"add: #menu withConstraints: [ :constraints | constraints height: self toolbarHeight ];"
 		"add:
 			(SpecPanedLayout newHorizontal
@@ -63,7 +69,7 @@ Chest class >> defaultSpec [
 		yourself"
 ]
 
-{ #category : #requirements }
+{ #category : #API }
 Chest class >> empty [
 	contents := nil.
 	self contentsUpdated.
@@ -75,13 +81,13 @@ Chest class >> open [
 	^ self new openWithSpec
 ]
 
-{ #category : #examples }
+{ #category : #API }
 Chest class >> remove: anObject [
 	contents remove: anObject.
 	self contentsUpdated.
 ]
 
-{ #category : #removing }
+{ #category : #API }
 Chest class >> removeAt: anIndex [
 	self contents removeAt: anIndex.
 	self contentsUpdated.
@@ -93,22 +99,29 @@ Chest class >> title [
 ]
 
 { #category : #initialization }
-Chest >> initializePresenter [
-	
-]
-
-{ #category : #initialization }
 Chest >> initializeWidgets [
 	playground := StPlayground new.
+	playground text autoAccept: true.
 	list := self newTable.
 	list addColumn: (IndexTableColumn title: 'Index');
 		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]).
 	list items: self class contents.
 	helpLabel := self newLabel.
 	helpLabel label: 'Use Chest to store objects from anywhere'.
+	buttonBar := self newButtonBar.
+	helpButton := self newButton
+"		action: [ UIManager default alert: 'hello' ];"
+		action: [ UIManager default confirm: 'Store an object: Chest add: anObject' label: 'Help on Chest' ];
+		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
+		"icon: ((self iconNamed: #question) scaledToSize: 16 @ 16)."
+	emptyButton := self newButton
+		action: [ Chest empty ];
+		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16).
+	buttonBar add: helpButton;
+		add: emptyButton.
 ]
 
 { #category : #updating }
 Chest >> updateList [
-	list items: self class contents.
+	list ifNotNil: [:lst | lst items: self class contents].
 ]
