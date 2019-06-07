@@ -122,12 +122,10 @@ Chest >> initializeWidgets [
 	playground := StPlayground new.
 	playground text autoAccept: true.
 	list := self newTable
-		addColumn: (IndexTableColumn title: 'Index');
+		addColumn: ((IndexTableColumn title: 'Index') width: 25);
 		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
 		items: self class contents;
-		"whenSelectionChangedDo: [ :item | playground text getSelection inspect]."
 		whenSelectionChangedDo: [ :item | self insertChestAt: item selectedIndex inPlayground: playground].
-		"whenSelectionChangedDo: [ :item | playground text type: '(Chest at: ', item selectedIndex asString, ')'. ]."
 	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
 	helpButton := self newButton
 		action: [
@@ -165,7 +163,7 @@ Chest >> insertChestAt: anInteger inPlayground: anStPlayground [
 	textRightOfTheSelection := textObject text allButFirst: selectionStop.
 	textToAdd := '(Chest at: ', anInteger asString, ')'.
 	textObject text: (textLeftOfTheSelection, textToAdd, textRightOfTheSelection).
-"	textObject setSelection: (1 to: 3)."
+	textObject setSelection: ((textLeftOfTheSelection size + textToAdd size + 1) to: (textLeftOfTheSelection size + textToAdd size)).
 	
 
 "playground text text: ((playground text text first: ((playground text getSelection instVarNamed: #start) -1)), '(Chest at: ', item selectedIndex asString, ')',  (playground text text allButFirst:  (playground text getSelection instVarNamed: #stop)))"
