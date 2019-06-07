@@ -5,9 +5,10 @@ Class {
 		'playground',
 		'list',
 		'helpLabel',
-		'buttonBar',
 		'helpButton',
-		'emptyButton'
+		'emptyButton',
+		'helpExpanded',
+		'helpLabel1'
 	],
 	#classVars : [
 		'contents'
@@ -48,25 +49,17 @@ Chest class >> debugWorldMenuOn: aBuilder [
 
 { #category : #specs }
 Chest class >> defaultSpec [
-	^ SpecPanedLayout newVertical
-		add: (SpecPanedLayout newHorizontal
-			add: #list;
-			add: #playground;
-			yourself);
-		add: (SpecBoxLayout newHorizontal 
-			add: #helpLabel;
-			add: #buttonBar;
-			yourself)
-		
-		"add: #menu withConstraints: [ :constraints | constraints height: self toolbarHeight ];"
-		"add:
-			(SpecPanedLayout newHorizontal
-				position: 200;
-				add: #list;
-				add: #page;
-				yourself);
-		add: #playground
-		yourself"
+    ^ SpecBoxLayout newVertical
+        add: (SpecPanedLayout newHorizontal
+            add: #list;
+            add: #playground;
+            yourself);
+        add: (SpecBoxLayout newHorizontal 
+            add: #helpLabel ;
+            add: #helpButton "withConstraints: [ :cstr | cstr width: 35 ]" ;
+				add: #emptyButton "withConstraints: [ :cstr | cstr width: 35 ]";
+            yourself) withConstraints: [:contraint | contraint height: 35];
+			yourself.
 ]
 
 { #category : #API }
@@ -93,9 +86,30 @@ Chest class >> removeAt: anIndex [
 	self contentsUpdated.
 ]
 
+{ #category : #'as yet unclassified' }
+Chest class >> specLayout [
+    ^ SpecBoxLayout newVertical
+        add: #buttonBar;
+        yourself
+]
+
+{ #category : #'as yet unclassified' }
+Chest class >> specLayoutHelpExpanded [
+	^ self defaultSpec add: 
+		(SpecBoxLayout newVertical
+			add: #helpLabel1;
+			yourself);
+		yourself.
+]
+
 { #category : #specs }
 Chest class >> title [
 	^ 'Chest'
+]
+
+{ #category : #initialization }
+Chest >> initialize [
+	helpExpanded := false.
 ]
 
 { #category : #initialization }
@@ -108,17 +122,23 @@ Chest >> initializeWidgets [
 	list items: self class contents.
 	helpLabel := self newLabel.
 	helpLabel label: 'Use Chest to store objects from anywhere'.
-	buttonBar := self newButtonBar.
 	helpButton := self newButton
-"		action: [ UIManager default alert: 'hello' ];"
-		action: [ UIManager default confirm: 'Store an object: Chest add: anObject' label: 'Help on Chest' ];
+		action: [
+			helpExpanded ifFalse: [
+				helpExpanded := true.
+				self window rebuildWithSpecLayout: self class specLayoutHelpExpanded.
+				helpButton state: true]
+			ifTrue: [
+				helpExpanded := false.
+				self window rebuildWithSpecLayout: self class defaultSpec.
+				helpButton state: false]];
 		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
 		"icon: ((self iconNamed: #question) scaledToSize: 16 @ 16)."
 	emptyButton := self newButton
 		action: [ Chest empty ];
 		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16).
-	buttonBar add: helpButton;
-		add: emptyButton.
+	helpLabel1 := self newLabel label: 'This is helpful'.
+	
 ]
 
 { #category : #updating }
