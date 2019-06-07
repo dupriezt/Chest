@@ -122,7 +122,7 @@ Chest >> initializeWidgets [
 	playground := StPlayground new.
 	playground text autoAccept: true.
 	list := self newTable
-		addColumn: ((IndexTableColumn title: 'Index') width: 25);
+		addColumn: ((IndexTableColumn title: 'Index') width: 40);
 		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
 		items: self class contents;
 		whenSelectionChangedDo: [ :item | self insertChestAt: item selectedIndex inPlayground: playground].
@@ -147,7 +147,7 @@ Chest >> initializeWidgets [
 	leftSpacerForHelpTitleLabel := SpacerPresenter new.
 	rightSpacerForHelpTitleLabel := SpacerPresenter new.
 	helpText := self newText enabled: false; text: (
-		'Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR, 'Chest at: anIndex' asText allBold, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR, 'Click on an object in the list to access it in the playground').
+		'Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR, 'Chest at: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR, 'Click on an object in the list to access it in the playground').
 	
 	
 	"helpText := self newText enabled: false; text: (Text streamContents: [:stream | stream nextPutAll: {Text string: 'Chest add: anObject' attribute: TextEmphasis bold. 'Stores an object into the chest'}])."
