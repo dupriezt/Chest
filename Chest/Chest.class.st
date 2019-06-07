@@ -136,11 +136,7 @@ Chest >> initialize [
 Chest >> initializeWidgets [
 	playground := StPlayground new.
 	playground text autoAccept: true.
-	objectTable := self newTable
-		addColumn: ((IndexTableColumn title: 'Index') width: 40);
-		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
-		items: self class contents;
-		whenSelectionChangedDo: [ :item | self insertChestAt: item selectedIndex inPlayground: playground].
+	objectTable := self makeObjectTable.
 	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
 	helpButton := self makeHelpButton.
 	emptyButton := self newButton
@@ -182,6 +178,15 @@ Chest >> makeHelpButton [
 				helpButton state: false]];
 		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
 		"icon: ((self iconNamed: #question) scaledToSize: 16 @ 16)."
+]
+
+{ #category : #initialization }
+Chest >> makeObjectTable [
+	^self newTable
+		addColumn: ((IndexTableColumn title: 'Index') width: 40);
+		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
+		items: self class contents;
+		whenSelectionChangedDo: [ :item | self insertChestAt: item selectedIndex inPlayground: playground].
 ]
 
 { #category : #updating }
