@@ -108,8 +108,8 @@ Chest class >> specLayoutHelpExpanded [
 				yourself)
 			withConstraints: [:cstr | cstr expand: false];
 			"add: #helpLabel1;"
-			add: #helpText withConstraints: [:cstr | cstr height: 120];
-			yourself) withConstraints: [:cstr | cstr expand: false; height: 160];
+			add: #helpText withConstraints: [:cstr | cstr height: 130];
+			yourself) withConstraints: [:cstr | cstr expand: false; height: 170];
 		yourself.
 ]
 
@@ -123,7 +123,8 @@ Chest >> helpText [
 	^ 'Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR,
 	 'Chest at: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR,
 'Chest inspectAt: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Inspects an object from the Chest', TextConstants CR,
-	'Chest empty' asText allBold, TextConstants Tab, TextConstants Tab, ' Empties the Chest', TextConstants CR,
+	'Chest empty' asText allBold, TextConstants Tab, TextConstants Tab, TextConstants Tab, TextConstants Tab, TextConstants Tab, ' Empties the Chest', TextConstants CR,
+	'Chest removeAt: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Remove an object from the Chest', TextConstants CR,
 	'Click on an object in the list to access it in the playground'.
 ]
 
