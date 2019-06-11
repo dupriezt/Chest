@@ -74,6 +74,16 @@ Chest class >> empty [
 	self contentsUpdated.
 ]
 
+{ #category : #specs }
+Chest class >> helpExpandedExtent [
+	^ self initialExtent + (0@200)
+]
+
+{ #category : #specs }
+Chest class >> initialExtent [
+	^ 400@300
+]
+
 { #category : #API }
 Chest class >> inspectAt: anIndex [
 	^ (self contents at: anIndex) inspect
@@ -82,7 +92,10 @@ Chest class >> inspectAt: anIndex [
 { #category : #examples }
 Chest class >> open [
 	<example>
-	^ self new openWithSpec
+	| a |
+	a := self new openWithSpec.
+	a window extent: self initialExtent.
+	^ a
 ]
 
 { #category : #API }
@@ -174,10 +187,12 @@ Chest >> makeHelpButton [
 			helpExpanded ifFalse: [
 				helpExpanded := true.
 				self window rebuildWithSpecLayout: self class specLayoutHelpExpanded.
-				helpButton state: true]
+				self window extent: self class helpExpandedExtent.
+				helpButton state: true.]
 			ifTrue: [
 				helpExpanded := false.
 				self window rebuildWithSpecLayout: self class defaultSpec.
+				self window extent: self class initialExtent.
 				helpButton state: false]];
 		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
 		"icon: ((self iconNamed: #question) scaledToSize: 16 @ 16)."
