@@ -80,6 +80,11 @@ Chest class >> helpExpandedExtent [
 ]
 
 { #category : #specs }
+Chest class >> helpPanelHeight [
+	^ 170
+]
+
+{ #category : #specs }
 Chest class >> initialExtent [
 	^ 400@300
 ]
@@ -133,8 +138,8 @@ Chest class >> title [
 
 { #category : #accessing }
 Chest >> helpText [
-	^ 'Chest add: anObject' asText allBold, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR,
-	 'Chest at: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR,
+	^ 'Chest add: anObject' asText allBold, TextConstants Tab, TextConstants Tab, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR,
+	 'Chest at: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, TextConstants Tab, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR,
 'Chest inspectAt: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Inspects an object from the Chest', TextConstants CR,
 	'Chest empty' asText allBold, TextConstants Tab, TextConstants Tab, TextConstants Tab, TextConstants Tab, TextConstants Tab, ' Empties the Chest', TextConstants CR,
 	'Chest removeAt: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Remove an object from the Chest', TextConstants CR,
@@ -182,17 +187,21 @@ Chest >> insertChestAt: anInteger inPlayground: anStPlayground [
 
 { #category : #initialization }
 Chest >> makeHelpButton [
+	|extent|
 	^ self newButton
 		action: [
 			helpExpanded ifFalse: [
 				helpExpanded := true.
+				extent := self window window extent.
 				self window rebuildWithSpecLayout: self class specLayoutHelpExpanded.
-				self window extent: self class helpExpandedExtent.
+				self window extent: (extent + (0@(self class helpPanelHeight))).
 				helpButton state: true.]
 			ifTrue: [
 				helpExpanded := false.
+				extent := self window window extent.
 				self window rebuildWithSpecLayout: self class defaultSpec.
-				self window extent: self class initialExtent.
+				self window extent: (extent - (0@(self class helpPanelHeight))).
+"				self window extent: self class initialExtent."
 				helpButton state: false]];
 		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
 		"icon: ((self iconNamed: #question) scaledToSize: 16 @ 16)."
