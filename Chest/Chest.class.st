@@ -22,7 +22,7 @@ Class {
 { #category : #API }
 Chest class >> add: anObject [
 	"Adds an object to the chest. Returns the index at which it has been added."
-	contents add: anObject.
+	self contents add: anObject.
 	self contentsUpdated.
 	^ contents size
 ]
