@@ -1,6 +1,6 @@
 Class {
 	#name : #Chest,
-	#superclass : #ComposablePresenter,
+	#superclass : #SpPresenter,
 	#instVars : [
 		'playground',
 		'helpButton',
@@ -55,12 +55,12 @@ Chest class >> debugWorldMenuOn: aBuilder [
 
 { #category : #specs }
 Chest class >> defaultSpec [
-    ^ SpecBoxLayout newVertical
-        add: (SpecPanedLayout newHorizontal
+    ^ SpBoxLayout newVertical
+        add: (SpPanedLayout newHorizontal
             add: #objectTable;
             add: #playground;
             yourself);
-        add: (SpecBoxLayout newHorizontal 
+        add: (SpBoxLayout newHorizontal 
             add: #descriptionLabel ;
             add: #helpButton withConstraints: [ :cstr | cstr width: 35 ] ;
 				add: #emptyButton withConstraints: [ :cstr | cstr width: 35 ];
@@ -118,8 +118,8 @@ Chest class >> removeAt: anIndex [
 { #category : #specs }
 Chest class >> specLayoutHelpExpanded [
 	^ self defaultSpec add: 
-		(SpecBoxLayout newVertical
-			add: (SpecBoxLayout newHorizontal
+		(SpBoxLayout newVertical
+			add: (SpBoxLayout newHorizontal
 				add: #leftSpacerForHelpTitleLabel;
 				add: #helpTitleLabel withConstraints: [:cstr | cstr expand: false];
 				add: #rightSpacerForHelpTitleLabel;
@@ -164,8 +164,8 @@ Chest >> initializeWidgets [
 		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16);
 		yourself.
 	helpTitleLabel := self newLabel label: 'Help'; emphasis: #bold.
-	leftSpacerForHelpTitleLabel := SpacerPresenter new.
-	rightSpacerForHelpTitleLabel := SpacerPresenter new.
+	leftSpacerForHelpTitleLabel := SpSpacerPresenter new.
+	rightSpacerForHelpTitleLabel := SpSpacerPresenter new.
 	helpText := self newText enabled: false; text: self helpText.
 ]
 
@@ -210,8 +210,8 @@ Chest >> makeHelpButton [
 { #category : #initialization }
 Chest >> makeObjectTable [
 	^self newTable
-		addColumn: ((IndexTableColumn title: 'Index') width: 40);
-		addColumn: (StringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
+		addColumn: ((SpIndexTableColumn title: 'Index') width: 40);
+		addColumn: (SpStringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
 		items: self class contents;
 		whenSelectionChangedDo: [ :item | self insertChestAt: item selectedIndex inPlayground: playground].
 ]
