@@ -1,7 +1,7 @@
 # Chest
 Chest allows you to store objects from anywhere to keep them around, check equality...  
 Store an object with `Chest add: anObject` and access it with: `Chest at: anIndex`.  
-The rest of the commands can be seen in the help panel.  
+The rest of the commands can be seen in the help panel (click on the ? button).  
 ![ChestPicture2](https://user-images.githubusercontent.com/32486709/62878741-f9934d80-bd29-11e9-93dd-5969fbf6de72.png)
 
 ## Open your Chest
