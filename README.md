@@ -25,7 +25,8 @@ Each Chest instance has an ID (Integer). These IDs are unique. No two Chest can 
 This is an instance of Chest that always exists, always has ID = 1, and can be interacted with in the same way as any other Chest by sending the messages to the Chest class.
 
 ### API
-```	Chest class
+```
+	Chest class
 		#new
 			Create and return a new Chest
 		#newNamed: aString
@@ -51,4 +52,5 @@ This is an instance of Chest that always exists, always has ID = 1, and can be i
 		#remove: anObject
 			Remove @anObject from this Chest
 		#removeAt: anInteger
-			Remove the object ar index @anInteger from this Chest```
+			Remove the object ar index @anInteger from this Chest
+```
