@@ -1,222 +1,225 @@
+"
+Represent a collection of ChestObject
+
+# Instance Variables
+	- contents: OrderedCollection<ChestObject>
+		The objects contained in this Chest instance
+	- name: String
+		Name of this Chest instance
+	- id: Integer
+		Unique id of this Chest instance
+		
+# Class Variables
+	- defaultInstance: Chest
+		The default Chest instance
+	- nextAvailableID: Integer
+		The next id that is not used by any Chest. To be given to the next Chest that is created.
+	- IDToChestInstance: Dictionary<Integer, Chest>
+		Maps chest ids to chest instances
+"
 Class {
 	#name : #Chest,
-	#superclass : #SpPresenter,
+	#superclass : #Object,
 	#instVars : [
-		'playground',
-		'helpButton',
-		'emptyButton',
-		'helpExpanded',
-		'descriptionLabel',
-		'helpTitleLabel',
-		'leftSpacerForHelpTitleLabel',
-		'rightSpacerForHelpTitleLabel',
-		'helpText',
-		'objectTable'
+		'contents',
+		'name',
+		'id'
 	],
 	#classVars : [
-		'contents'
+		'IDToChestInstance',
+		'defaultInstance',
+		'nextAvailableID',
+		'subscribers'
 	],
 	#category : #Chest
 }
 
-{ #category : #API }
+{ #category : #'as yet unclassified' }
+Chest class >> IDToChestInstance [
+	^ IDToChestInstance
+]
+
+{ #category : #api }
 Chest class >> add: anObject [
+	^ self defaultInstance add: anObject
+]
+
+{ #category : #'as yet unclassified' }
+Chest class >> allChests [
+	^ self IDToChestInstance values
+]
+
+{ #category : #api }
+Chest class >> at: anIndex [
+	^ self defaultInstance at: anIndex
+]
+
+{ #category : #api }
+Chest class >> contents [
+	^ self defaultInstance contents
+]
+
+{ #category : #'as yet unclassified' }
+Chest class >> defaultInstance [
+	^ defaultInstance
+	
+]
+
+{ #category : #'as yet unclassified' }
+Chest class >> getNewID [
+	| newId |
+	newId := nextAvailableID.
+	nextAvailableID := nextAvailableID + 1.
+	^ newId
+]
+
+{ #category : #'class initialization' }
+Chest class >> initialize [
+	subscribers := OrderedCollection new.
+	IDToChestInstance := Dictionary new.
+	nextAvailableID := 1.
+"	defaultInstance := self newNamed: 'Default'."
+	defaultInstance := DefaultChest newNamed: 'Default'
+]
+
+{ #category : #api }
+Chest class >> new [
+	| chest |
+	chest := super new.
+	chest name: 'Unnamed'.
+	self IDToChestInstance at: chest id put: chest.
+	self notifyNewChest: chest.
+	^ chest.
+]
+
+{ #category : #api }
+Chest class >> newNamed: aString [
+	^ self new name: aString; yourself
+]
+
+{ #category : #'as yet unclassified' }
+Chest class >> notifyChestRemoved: aChest [
+	subscribers do: [ :subscriber | subscriber event_chestRemoved: aChest]
+]
+
+{ #category : #'as yet unclassified' }
+Chest class >> notifyContentsOfChest: aChest updatedTo: contents [
+	subscribers do: [ :subscriber | subscriber event_contentOfChest: aChest updatedTo: contents]
+]
+
+{ #category : #'as yet unclassified' }
+Chest class >> notifyNewChest: aChest [
+	subscribers do: [ :subscriber | subscriber event_newChest: aChest ].
+]
+
+{ #category : #api }
+Chest class >> remove: anObject [
+	^ self defaultInstance remove: anObject
+]
+
+{ #category : #api }
+Chest class >> removeAt: anIndex [
+	^ self defaultInstance removeAt: anIndex
+]
+
+{ #category : #removing }
+Chest class >> removeChest: aChest [
+	self IDToChestInstance removeKey: aChest id.
+	self notifyChestRemoved: aChest.
+]
+
+{ #category : #'as yet unclassified' }
+Chest class >> subscribeToUpdates: subscriber [
+	"subscriber will be sent the #event_newChest: and #event_contentOfChest:updatedTo: and #event_chestRemoved: messages when these events happen"
+	subscribers add: subscriber
+]
+
+{ #category : #'class initialization' }
+Chest class >> withID: anID [
+	"Returns the Chest whose id is @anID"
+	^ self IDToChestInstance at: anID
+]
+
+{ #category : #api }
+Chest >> add: anObject [
 	"Adds an object to the chest. Returns the index at which it has been added."
-	self contents add: anObject.
+	self contentsPrivate add: anObject.
 	self contentsUpdated.
 	^ contents size
 ]
 
-{ #category : #API }
-Chest class >> at: anIndex [
-	^ self contents at: anIndex
+{ #category : #api }
+Chest >> at: anIndex [
+	^ self contentsPrivate at: anIndex
 ]
 
 { #category : #accessing }
-Chest class >> contents [
-	^ contents ifNil: [ contents := OrderedCollection new. ^ contents]
+Chest >> contents [
+	^ self contentsPrivate copy
 ]
 
 { #category : #accessing }
-Chest class >> contentsUpdated [
-	self allInstancesDo: [ :inst | inst updateObjectTable ].
-]
-
-{ #category : #'menu-entry' }
-Chest class >> debugWorldMenuOn: aBuilder [
-	<worldMenu>
-	(aBuilder item: #'Open Chest')
-		parent: #Debugging;
-		order: 0;
-		help: 'Store objects from anywhere to keep them around, check equality...';
-		action: [ self open ];
-		icon: (Smalltalk ui icons iconNamed: #group).
-]
-
-{ #category : #specs }
-Chest class >> defaultSpec [
-    ^ SpBoxLayout newVertical
-        add: (SpPanedLayout newHorizontal
-            add: #objectTable;
-            add: #playground;
-            yourself);
-        add: (SpBoxLayout newHorizontal 
-            add: #descriptionLabel ;
-            add: #helpButton withConstraints: [ :cstr | cstr width: 35 ] ;
-				add: #emptyButton withConstraints: [ :cstr | cstr width: 35 ];
-            yourself) withConstraints: [:contraint | contraint height: 35];
-			yourself.
-]
-
-{ #category : #API }
-Chest class >> empty [
-	contents := nil.
-	self contentsUpdated.
-]
-
-{ #category : #specs }
-Chest class >> helpExpandedExtent [
-	^ self initialExtent + (0@200)
-]
-
-{ #category : #specs }
-Chest class >> helpPanelHeight [
-	^ 170
-]
-
-{ #category : #specs }
-Chest class >> initialExtent [
-	^ 400@300
-]
-
-{ #category : #API }
-Chest class >> inspectAt: anIndex [
-	^ (self contents at: anIndex) inspect
-]
-
-{ #category : #examples }
-Chest class >> open [
-	<example>
-	| a |
-	a := self new openWithSpec.
-	a window extent: self initialExtent.
-	^ a
-]
-
-{ #category : #API }
-Chest class >> remove: anObject [
-	contents remove: anObject.
-	self contentsUpdated.
-]
-
-{ #category : #API }
-Chest class >> removeAt: anIndex [
-	self contents removeAt: anIndex.
-	self contentsUpdated.
-]
-
-{ #category : #specs }
-Chest class >> specLayoutHelpExpanded [
-	^ self defaultSpec add: 
-		(SpBoxLayout newVertical
-			add: (SpBoxLayout newHorizontal
-				add: #leftSpacerForHelpTitleLabel;
-				add: #helpTitleLabel withConstraints: [:cstr | cstr expand: false];
-				add: #rightSpacerForHelpTitleLabel;
-				yourself)
-			withConstraints: [:cstr | cstr expand: false];
-			"add: #helpLabel1;"
-			add: #helpText withConstraints: [:cstr | cstr height: 130];
-			yourself) withConstraints: [:cstr | cstr expand: false; height: 170];
-		yourself.
-]
-
-{ #category : #specs }
-Chest class >> title [
-	^ 'Chest'
+Chest >> contentsPrivate [
+	^ contents
 ]
 
 { #category : #accessing }
-Chest >> helpText [
-	^ 'Chest add: anObject' asText allBold, TextConstants Tab, TextConstants Tab, TextConstants Tab, ' Stores an object into the Chest' asText, TextConstants CR,
-	 'Chest at: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, TextConstants Tab, TextConstants Tab, ' Accesses an object from the Chest', TextConstants CR,
-'Chest inspectAt: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Inspects an object from the Chest', TextConstants CR,
-	'Chest empty' asText allBold, TextConstants Tab, TextConstants Tab, TextConstants Tab, TextConstants Tab, TextConstants Tab, ' Empties the Chest', TextConstants CR,
-	'Chest removeAt: anIndex' asText allBold, TextConstants Tab, TextConstants Tab, ' Remove an object from the Chest', TextConstants CR,
-	'Click on an object in the list to access it in the playground'.
+Chest >> contentsUpdated [
+	self class notifyContentsOfChest: self updatedTo: self contents
+]
+
+{ #category : #api }
+Chest >> empty [
+	self initializeContents.
+	self contentsUpdated.
+]
+
+{ #category : #api }
+Chest >> id [
+	^ id
 ]
 
 { #category : #initialization }
 Chest >> initialize [
-	super initialize.
-	helpExpanded := false.
+	id := self class getNewID.
+	self initializeContents.
 ]
 
 { #category : #initialization }
-Chest >> initializeWidgets [
-	playground := StPlayground new.
-	playground text autoAccept: true.
-	objectTable := self makeObjectTable.
-	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
-	helpButton := self makeHelpButton.
-	emptyButton := self newButton
-		action: [ Chest empty ];
-		icon: ((self iconNamed: #remove) scaledToSize: 16 @ 16);
-		yourself.
-	helpTitleLabel := self newLabel label: 'Help'; emphasis: #bold.
-	leftSpacerForHelpTitleLabel := SpSpacerPresenter new.
-	rightSpacerForHelpTitleLabel := SpSpacerPresenter new.
-	helpText := self newText enabled: false; text: self helpText.
+Chest >> initializeContents [
+	contents := OrderedCollection new.
 ]
 
 { #category : #accessing }
-Chest >> insertChestAt: anInteger inPlayground: anStPlayground [
-	| textLeftOfTheSelection textRightOfTheSelection textObject textToAdd selectionStart selectionStop |
-	textObject := anStPlayground text.
-	selectionStart := textObject getSelection instVarNamed: #start.
-	selectionStop := textObject getSelection instVarNamed: #stop.
-	textLeftOfTheSelection := textObject text first: selectionStart -1.
-	textRightOfTheSelection := textObject text allButFirst: selectionStop.
-	textToAdd := '(Chest at: ', anInteger asString, ')'.
-	textObject text: (textLeftOfTheSelection, textToAdd, textRightOfTheSelection).
-	textObject setSelection: ((textLeftOfTheSelection size + textToAdd size + 1) to: (textLeftOfTheSelection size + textToAdd size)).
-	
-
-"playground text text: ((playground text text first: ((playground text getSelection instVarNamed: #start) -1)), '(Chest at: ', item selectedIndex asString, ')',  (playground text text allButFirst:  (playground text getSelection instVarNamed: #stop)))"
+Chest >> inspectAt: anIndex [
+	^ (self contentsPrivate at: anIndex) inspect
 ]
 
-{ #category : #initialization }
-Chest >> makeHelpButton [
-	|extent|
-	^ self newButton
-		action: [
-			helpExpanded ifFalse: [
-				helpExpanded := true.
-				extent := self window window extent.
-				self window rebuildWithSpecLayout: self class specLayoutHelpExpanded.
-				self window extent: (extent + (0@(self class helpPanelHeight))).
-				helpButton state: true.]
-			ifTrue: [
-				helpExpanded := false.
-				extent := self window window extent.
-				self window rebuildWithSpecLayout: self class defaultSpec.
-				self window extent: (extent - (0@(self class helpPanelHeight))).
-"				self window extent: self class initialExtent."
-				helpButton state: false]];
-		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
-		"icon: ((self iconNamed: #question) scaledToSize: 16 @ 16)."
+{ #category : #api }
+Chest >> name [
+	name ifNil: [ name := '' ].
+	^ name
 ]
 
-{ #category : #initialization }
-Chest >> makeObjectTable [
-	^self newTable
-		addColumn: ((SpIndexTableColumn title: 'Index') width: 40);
-		addColumn: (SpStringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
-		items: self class contents;
-		whenSelectionChangedDo: [ :item | self insertChestAt: item selectedIndex inPlayground: playground].
+{ #category : #accessing }
+Chest >> name: anObject [
+	name := anObject
 ]
 
-{ #category : #updating }
-Chest >> updateObjectTable [
-	objectTable ifNotNil: [:lst | lst items: self class contents].
+{ #category : #removing }
+Chest >> remove [
+	"Remove this chest from the list of all chests"
+	self class removeChest: self
+]
+
+{ #category : #accessing }
+Chest >> remove: anObject [
+	contents remove: anObject.
+	self contentsUpdated.
+]
+
+{ #category : #accessing }
+Chest >> removeAt: anIndex [
+	self contentsPrivate removeAt: anIndex.
+	self contentsUpdated.
 ]
