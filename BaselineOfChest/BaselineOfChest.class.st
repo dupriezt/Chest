@@ -11,6 +11,7 @@ BaselineOfChest >> baseline: spec [
 	spec for: #common do: [ 
 		spec 
 			package: 'Chest';
+			package: 'Chest-Tests';
 			baseline: 'NewTools' with: [
 				spec
 					repository: 'github://pharo-spec/NewTools/tree/master/src'.
