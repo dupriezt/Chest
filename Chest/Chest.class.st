@@ -148,6 +148,7 @@ Chest class >> withID: anID [
 { #category : #api }
 Chest >> add: anObject [
 	"Adds an object to the chest. Returns the index at which it has been added."
+
 	self contentsPrivate add: anObject.
 	self contentsUpdated.
 	^ contents size
@@ -176,7 +177,7 @@ Chest >> contentsUpdated [
 { #category : #api }
 Chest >> empty [
 	self initializeContents.
-	self contentsUpdated.
+	self contentsUpdated
 ]
 
 { #category : #api }
@@ -187,12 +188,12 @@ Chest >> id [
 { #category : #initialization }
 Chest >> initialize [
 	id := self class getNewID.
-	self initializeContents.
+	self initializeContents
 ]
 
 { #category : #initialization }
 Chest >> initializeContents [
-	contents := OrderedCollection new.
+	contents := OrderedCollection new
 ]
 
 { #category : #accessing }
@@ -214,17 +215,18 @@ Chest >> name: anObject [
 { #category : #removing }
 Chest >> remove [
 	"Remove this chest from the list of all chests"
+
 	self class removeChest: self
 ]
 
 { #category : #accessing }
 Chest >> remove: anObject [
 	contents remove: anObject.
-	self contentsUpdated.
+	self contentsUpdated
 ]
 
 { #category : #accessing }
 Chest >> removeAt: anIndex [
 	self contentsPrivate removeAt: anIndex.
-	self contentsUpdated.
+	self contentsUpdated
 ]

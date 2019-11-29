@@ -7,5 +7,6 @@ Class {
 { #category : #removing }
 DefaultChest >> remove [
 	"The default chest cannot be removed"
+
 	^ self
 ]

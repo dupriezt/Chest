@@ -99,64 +99,72 @@ ChestPresenter >> event_chestRemoved: aChest [
 { #category : #initialization }
 ChestPresenter >> event_contentOfChest: aChest updatedTo: newContents [
 	| currentlySelectedChest |
-	currentlySelectedChest := chestsTable selectedItems ifEmpty: [^ self] ifNotEmpty: [:selectedItems | selectedItems first].
-	(currentlySelectedChest == aChest) ifTrue: [ self updateChestContentTableForChest: aChest].
+	currentlySelectedChest := chestsTable selectedItems
+		                          ifEmpty: [ ^ self ]
+		                          ifNotEmpty: [ :selectedItems | 
+		                          selectedItems first ].
+	currentlySelectedChest == aChest ifTrue: [ 
+		self updateChestContentTableForChest: aChest ]
 ]
 
 { #category : #initialization }
 ChestPresenter >> event_newChest: aChest [
-	self updateChestsTable 
+	self updateChestsTable
 ]
 
 { #category : #updating }
 ChestPresenter >> helpText [
-	^ 'THIS IS THE HELP FOR CHESTS', Character cr asString, Character cr asString,
-'ID', Character cr asString,
-'	Each Chest instance has an ID (Integer). These IDs are unique. No two Chest can ever have the same ID (unless of course one re-initialize the Chest class).', Character cr asString, Character cr asString,
-
-'Default Chest', Character cr asString,
-'	This is an instance of Chest that always exists, always has ID = 1, and can be interacted with in the same way as any other Chest by sending the messages to the Chest class.', Character cr asString, Character cr asString,
-
-'API', Character cr asString,
-'	Chest class', Character cr asString,
-'		#new', Character cr asString,
-'			Create and return a new Chest', Character cr asString,
-'		#newNamed: aString', Character cr asString,
-'			Create and return a new Chest, with the provided name', Character cr asString, 
-'		#withId: anInteger', Character cr asString,
-'			Return the Chest whose ID is @anInteger', Character cr asString, Character cr asString,
-
-'	Chest instance', Character cr asString,
-'		#add: anObject', Character cr asString,
-'			Add anObject to this Chest', Character cr asString,
-'		#at: anInteger', Character cr asString,
-'			Gets the object stored in this Chest at index @anInteger', Character cr asString,
-'		#contents', Character cr asString,
-'			Gets an OrderedCollection with the content of this Chest. This collection is a copy so editing it directly does not affect this Chest.',Character cr asString,
-'		#empty',Character cr asString,
-'			Removes all objects from this Chest', Character cr asString,
-'		#name', Character cr asString,
-'			Gets the name of this Chest', Character cr asString,
-'		#id', Character cr asString,
-'			Gets the ID of this Chest', Character cr asString,
-'		#remove', Character cr asString,
-'			Destroy this Chest (it will no longer appear in the Chest UI)', Character cr asString,
-'		#remove: anObject', Character cr asString,
-'			Remove @anObject from this Chest', Character cr asString,
-'		#removeAt: anInteger',Character cr asString,
-'			Remove the object ar index @anInteger from this Chest'.
+	^ 'THIS IS THE HELP FOR CHESTS' , Character cr asString
+	  , Character cr asString , 'ID' , Character cr asString
+	  ,
+	  '	Each Chest instance has an ID (Integer). These IDs are unique. No two Chest can ever have the same ID (unless of course one re-initialize the Chest class).'
+	  , Character cr asString , Character cr asString , 'Default Chest'
+	  , Character cr asString
+	  ,
+	  '	This is an instance of Chest that always exists, always has ID = 1, and can be interacted with in the same way as any other Chest by sending the messages to the Chest class.'
+	  , Character cr asString , Character cr asString , 'API'
+	  , Character cr asString , '	Chest class' , Character cr asString
+	  , '		#new' , Character cr asString
+	  , '			Create and return a new Chest' , Character cr asString
+	  , '		#newNamed: aString' , Character cr asString
+	  , '			Create and return a new Chest, with the provided name'
+	  , Character cr asString , '		#withId: anInteger'
+	  , Character cr asString
+	  , '			Return the Chest whose ID is @anInteger'
+	  , Character cr asString , Character cr asString , '	Chest instance'
+	  , Character cr asString , '		#add: anObject'
+	  , Character cr asString , '			Add anObject to this Chest'
+	  , Character cr asString , '		#at: anInteger'
+	  , Character cr asString
+	  , '			Gets the object stored in this Chest at index @anInteger'
+	  , Character cr asString , '		#contents' , Character cr asString
+	  ,
+	  '			Gets an OrderedCollection with the content of this Chest. This collection is a copy so editing it directly does not affect this Chest.'
+	  , Character cr asString , '		#empty' , Character cr asString
+	  , '			Removes all objects from this Chest' , Character cr asString
+	  , '		#name' , Character cr asString
+	  , '			Gets the name of this Chest' , Character cr asString
+	  , '		#id' , Character cr asString , '			Gets the ID of this Chest'
+	  , Character cr asString , '		#remove' , Character cr asString
+	  ,
+	  '			Destroy this Chest (it will no longer appear in the Chest UI)'
+	  , Character cr asString , '		#remove: anObject'
+	  , Character cr asString , '			Remove @anObject from this Chest'
+	  , Character cr asString , '		#removeAt: anInteger'
+	  , Character cr asString
+	  , '			Remove the object ar index @anInteger from this Chest'
 ]
 
 { #category : #'as yet unclassified' }
 ChestPresenter >> iconManager [
-	^ Smalltalk ui icons.
+	^ Smalltalk ui icons
 ]
 
 { #category : #initialization }
 ChestPresenter >> initialize [
 	super initialize.
 	helpExpanded := false.
-	Chest subscribeToUpdates: self.
+	Chest subscribeToUpdates: self
 ]
 
 { #category : #initialization }
@@ -167,10 +175,10 @@ ChestPresenter >> initializeWidgets [
 	chestsTableToolbar := self makeChestsTableToolbar.
 	chestContentsTable := self makeChestContentsTable.
 	chestContentsTableToolbar := self makeChestContentsTableToolbar.
-	inspector :=  StInspector on: (StInspectorModel on: nil).
+	inspector := StInspector on: (StInspectorModel on: nil).
 	helpButton := self makeHelpButton.
-	chestsTable selectIndex: 1.
-	
+	chestsTable selectIndex: 1
+
 	"objectTable := self makeObjectTable.
 	descriptionLabel := self newLabel label: 'Use Chest to store objects from anywhere'.
 	helpButton := self makeHelpButton.
@@ -190,28 +198,31 @@ ChestPresenter >> insertChestAt: anInteger inPlayground: anStPlayground [
 	textObject := anStPlayground text.
 	selectionStart := textObject getSelection instVarNamed: #start.
 	selectionStop := textObject getSelection instVarNamed: #stop.
-	textLeftOfTheSelection := textObject text first: selectionStart -1.
+	textLeftOfTheSelection := textObject text first: selectionStart - 1.
 	textRightOfTheSelection := textObject text allButFirst: selectionStop.
-	textToAdd := '(Chest at: ', anInteger asString, ')'.
-	textObject text: (textLeftOfTheSelection, textToAdd, textRightOfTheSelection).
-	textObject setSelection: ((textLeftOfTheSelection size + textToAdd size + 1) to: (textLeftOfTheSelection size + textToAdd size)).
-	
+	textToAdd := '(Chest at: ' , anInteger asString , ')'.
+	textObject text:
+		textLeftOfTheSelection , textToAdd , textRightOfTheSelection.
+	textObject setSelection:
+		(textLeftOfTheSelection size + textToAdd size + 1 to:
+		 textLeftOfTheSelection size + textToAdd size)
 
-"playground text text: ((playground text text first: ((playground text getSelection instVarNamed: #start) -1)), '(Chest at: ', item selectedIndex asString, ')',  (playground text text allButFirst:  (playground text getSelection instVarNamed: #stop)))"
+
+	"playground text text: ((playground text text first: ((playground text getSelection instVarNamed: #start) -1)), '(Chest at: ', item selectedIndex asString, ')',  (playground text text allButFirst:  (playground text getSelection instVarNamed: #stop)))"
 ]
 
 { #category : #initialization }
 ChestPresenter >> makeChestContentsTable [
-	^self newTable
-		addColumn: ((SpIndexTableColumn title: 'Index') width: 40);
-		addColumn: (SpStringTableColumn title: 'Object' evaluated: [ :obj | obj asString ]);
-		items: OrderedCollection new;
-		whenSelectionChangedDo: [ :selection |
-			"self insertChestAt: item selectedIndex inPlayground: playground."
-			inspector model inspectedObject: (selection selectedItem).
-				inspector refresh.
-				inspector initialize. "Necessary hack for the inspector to actually refresh, until its #refresh method actually works"
-			].
+	^ self newTable
+		  addColumn: ((SpIndexTableColumn title: 'Index') width: 40);
+		  addColumn: (SpStringTableColumn
+				   title: 'Object'
+				   evaluated: [ :obj | obj asString ]);
+		  items: OrderedCollection new;
+		  whenSelectionChangedDo: [ :selection | "self insertChestAt: item selectedIndex inPlayground: playground."
+			  inspector model inspectedObject: selection selectedItem.
+			  inspector refresh.
+			  inspector initialize "Necessary hack for the inspector to actually refresh, until its #refresh method actually works" ]
 ]
 
 { #category : #initialization }
@@ -219,33 +230,45 @@ ChestPresenter >> makeChestContentsTableToolbar [
 	| toolbar |
 	toolbar := self newToolBar.
 	toolbar addItem: (SpToolBarButton new
-		label: 'Remove';
-		icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
-		action: [
-			chestContentsTable selection selectedIndex ifNotNil: [:index |
-				(index ~= 0) ifTrue: [ 
-					self selectedChest removeAt: index.
-					((chestContentsTable selection selectedIndex = 1) and: [ chestContentsTable items isNotEmpty  ]) ifTrue: [ chestContentsTable selectIndex: 1 ] ifFalse: [ chestContentsTable selectIndex: chestContentsTable selectedIndex - 1 ]]]]).
+			 label: 'Remove';
+			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
+			 action: [ 
+				 chestContentsTable selection selectedIndex ifNotNil: [ :index | 
+						 index ~= 0 ifTrue: [ 
+								 self selectedChest removeAt: index.
+								 (chestContentsTable selection selectedIndex = 1 and: [ 
+										  chestContentsTable items isNotEmpty ])
+									 ifTrue: [ chestContentsTable selectIndex: 1 ]
+									 ifFalse: [ 
+										 chestContentsTable selectIndex:
+												 chestContentsTable selectedIndex - 1 ] ] ] ]).
 	toolbar addItem: (SpToolBarButton new
-		label: 'Remove All';
-		icon: (self iconManager iconNamed: #glamorousTrash);
-		action: [ 
-			chestContentsTable items ifNotEmpty: [ chestContentsTable items size to: 1 by: -1 do: [:index | self selectedChest removeAt: index ] ]]).
+			 label: 'Remove All';
+			 icon: (self iconManager iconNamed: #glamorousTrash);
+			 action: [ 
+				 chestContentsTable items ifNotEmpty: [ 
+						 chestContentsTable items size to: 1 by: -1 do: [ :index | 
+							 self selectedChest removeAt: index ] ] ]).
 	^ toolbar
-	
 ]
 
 { #category : #initialization }
 ChestPresenter >> makeChestsTable [
-	^self newTable
-		addColumn: ((SpStringTableColumn title: 'ID' evaluated: [:chest | chest id]) width: 40);
-		addColumn: (SpStringTableColumn title: 'Name' evaluated: [ :chest | chest name ]);
-		items: Chest allChests;
-		whenSelectionChangedDo: [ :selection |
-			self updateChestContentTableForChest: selection selectedItem.
-			chestContentsTable items ifNotEmpty: [ chestContentsTable selectIndex: 1 ].
-		];
-		sortingBlock: [ :chest1 :chest2 | chest1 id < chest2 id ].
+	^ self newTable
+		  addColumn:
+			  ((SpStringTableColumn
+				    title: 'ID'
+				    evaluated: [ :chest | chest id ]) width: 40);
+		  addColumn:
+			  (SpStringTableColumn
+				   title: 'Name'
+				   evaluated: [ :chest | chest name ]);
+		  items: Chest allChests;
+		  whenSelectionChangedDo: [ :selection | 
+			  self updateChestContentTableForChest: selection selectedItem.
+			  chestContentsTable items ifNotEmpty: [ 
+					  chestContentsTable selectIndex: 1 ] ];
+		  sortingBlock: [ :chest1 :chest2 | chest1 id < chest2 id ]
 ]
 
 { #category : #initialization }
@@ -253,31 +276,28 @@ ChestPresenter >> makeChestsTableToolbar [
 	| toolbar |
 	toolbar := self newToolBar.
 	toolbar addItem: (SpToolBarButton new
-		label: 'Remove';
-		icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
-		action: [
-			chestsTable selection selectedIndex ifNotNil: [:index | 
-				(chestsTable items size >= index) ifTrue: [ 
-					"index is inside the list's bounds"
-					(chestsTable	itemAt: index) remove.
-					chestsTable selectIndex: (1 max: (chestsTable selectedIndex - 1)).
-				]
-			]]).
+			 label: 'Remove';
+			 icon: (self iconManager iconNamed: #remotesManagerRemoveRemote);
+			 action: [ 
+				 chestsTable selection selectedIndex ifNotNil: [ :index | 
+						 chestsTable items size >= index ifTrue: [ "index is inside the list's bounds"
+								 (chestsTable itemAt: index) remove.
+								 chestsTable selectIndex:
+										 (1 max: chestsTable selectedIndex - 1) ] ] ]).
 	toolbar addItem: (SpToolBarButton new
-		label: 'Remove All';
-		icon: (self iconManager iconNamed: #glamorousTrash);
-		action: [ chestsTable items copy do: [:chest | chest remove ] ]).
+			 label: 'Remove All';
+			 icon: (self iconManager iconNamed: #glamorousTrash);
+			 action: [ chestsTable items copy do: [ :chest | chest remove ] ]).
 	^ toolbar
-	
 ]
 
 { #category : #initialization }
 ChestPresenter >> makeHelpButton [
 	^ self newButton
-		action: [ UIManager default notify: self helpText ];
-		icon: ((self iconNamed: #help) scaledToSize: 16 @ 16).
-		
-"	^ self newButton
+		  action: [ UIManager default notify: self helpText ];
+		  icon: ((self iconNamed: #help) scaledToSize: 16 @ 16)
+
+	"	^ self newButton
 		action: [
 			helpExpanded ifFalse: [
 				helpExpanded := true.
@@ -301,10 +321,10 @@ ChestPresenter >> selectedChest [
 
 { #category : #updating }
 ChestPresenter >> updateChestContentTableForChest: aChest [
-	chestContentsTable ifNotNil: [:lst | lst items: aChest contents].
+	chestContentsTable ifNotNil: [ :lst | lst items: aChest contents ]
 ]
 
 { #category : #updating }
 ChestPresenter >> updateChestsTable [
-	chestsTable ifNotNil: [:lst | lst items: Chest allChests].
+	chestsTable ifNotNil: [ :lst | lst items: Chest allChests ]
 ]
