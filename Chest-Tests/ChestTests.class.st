@@ -1,8 +1,25 @@
 Class {
 	#name : #ChestTests,
 	#superclass : #TestCase,
+	#instVars : [
+		'initialChests'
+	],
 	#category : #'Chest-Tests'
 }
+
+{ #category : #running }
+ChestTests >> setUp [
+	"Hooks that subclasses may override to define the fixture of test."
+	initialChests := Chest allChests copy. "Keep a copy of all the chests that currently exist"
+]
+
+{ #category : #running }
+ChestTests >> tearDown [
+	| nowChests |
+	nowChests := Chest allChests copy.
+	"Removing chests that currently exist but did not exist before the test execution"
+	nowChests do: [ :aChest | (initialChests includes: aChest) ifFalse: [ Chest removeChest: aChest ] ].
+]
 
 { #category : #tests }
 ChestTests >> testAddRemoveToChest [
