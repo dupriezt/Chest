@@ -34,9 +34,14 @@ Class {
 	#category : #Chest
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 Chest class >> IDToChestInstance [
 	^ IDToChestInstance
+]
+
+{ #category : #private }
+Chest class >> IDToChestInstance: aValue [
+	IDToChestInstance := aValue
 ]
 
 { #category : #api }
@@ -44,7 +49,7 @@ Chest class >> add: anObject [
 	^ self defaultInstance add: anObject
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 Chest class >> allChests [
 	^ self IDToChestInstance values
 ]
@@ -59,13 +64,13 @@ Chest class >> contents [
 	^ self defaultInstance contents
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 Chest class >> defaultInstance [
 	^ defaultInstance
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #private }
 Chest class >> getNewID [
 	| newId |
 	newId := nextAvailableID.
@@ -97,17 +102,17 @@ Chest class >> newNamed: aString [
 	^ self new name: aString; yourself
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'event system' }
 Chest class >> notifyChestRemoved: aChest [
 	subscribers do: [ :subscriber | subscriber event_chestRemoved: aChest]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'event system' }
 Chest class >> notifyContentsOfChest: aChest updatedTo: contents [
 	subscribers do: [ :subscriber | subscriber event_contentOfChest: aChest updatedTo: contents]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'event system' }
 Chest class >> notifyNewChest: aChest [
 	subscribers do: [ :subscriber | subscriber event_newChest: aChest ].
 ]
@@ -128,7 +133,7 @@ Chest class >> removeChest: aChest [
 	self notifyChestRemoved: aChest.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'event system' }
 Chest class >> subscribeToUpdates: subscriber [
 	"subscriber will be sent the #event_newChest: and #event_contentOfChest:updatedTo: and #event_chestRemoved: messages when these events happen"
 	subscribers add: subscriber
